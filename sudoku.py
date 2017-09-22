@@ -123,6 +123,7 @@ def UDSymmetry(sudoku):
 	return symmetry
 
 def globalSymmetry(sudoku):
+	# return np.mean(np.array([diag1Symmetry(sudoku),diag2Symmetry(sudoku),LRSymmetry(sudoku),UDSymmetry(sudoku)]))
 	return max([diag1Symmetry(sudoku),diag2Symmetry(sudoku),LRSymmetry(sudoku),UDSymmetry(sudoku)])
 
 if __name__ == "__main__":

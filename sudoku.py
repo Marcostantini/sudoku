@@ -74,6 +74,56 @@ def maxDensity(sudoku):
 	density = math.sqrt(pow(SIZE-average, 2) * (givens / SIZE) + pow(givens % SIZE - average, 2) + pow(average, 2) * (SIZE - math.ceil(givens / float(SIZE))))
 	return float(density)
 
+def diag1Symmetry(sudoku):
+	givens = float(getGivens(sudoku))
+	sunp = np.array(sudoku)
+	sunpt = sunp.T
+	symmetric_givens = 0
+	for row in range(SIZE):
+		for col in range(SIZE):
+			if sunp[row][col] != 0 and sunpt[row][col] != 0:
+				symmetric_givens += 1
+	symmetry = symmetric_givens / givens
+	return symmetry
+
+def diag2Symmetry(sudoku):
+	givens = float(getGivens(sudoku))
+	sunp = np.array(sudoku)
+	sunpt = np.fliplr(np.flipud(sunp)).T
+	symmetric_givens = 0
+	for row in range(SIZE):
+		for col in range(SIZE):
+			if sunp[row][col] != 0 and sunpt[row][col] != 0:
+				symmetric_givens += 1
+	symmetry = symmetric_givens / givens
+	return symmetry
+
+def LRSymmetry(sudoku):
+	givens = float(getGivens(sudoku))
+	sunp = np.array(sudoku)
+	sunpt = np.fliplr(sunp)
+	symmetric_givens = 0
+	for row in range(SIZE):
+		for col in range(SIZE):
+			if sunp[row][col] != 0 and sunpt[row][col] != 0:
+				symmetric_givens += 1
+	symmetry = symmetric_givens / givens
+	return symmetry
+
+def UDSymmetry(sudoku):
+	givens = float(getGivens(sudoku))
+	sunp = np.array(sudoku)
+	sunpt = np.flipud(sunp)
+	symmetric_givens = 0
+	for row in range(SIZE):
+		for col in range(SIZE):
+			if sunp[row][col] != 0 and sunpt[row][col] != 0:
+				symmetric_givens += 1
+	symmetry = symmetric_givens / givens
+	return symmetry
+
+def globalSymmetry(sudoku):
+	return max([diag1Symmetry(sudoku),diag2Symmetry(sudoku),LRSymmetry(sudoku),UDSymmetry(sudoku)])
 
 if __name__ == "__main__":
 
@@ -110,14 +160,25 @@ if __name__ == "__main__":
 	# plt.hist(block_densities)
 
 	# calculates the density of the sudokus wrt rows, columns and blocks
-	global_densities = []
-	for i in range(len(sudokus)):
-		global_densities.append(globalDensity(sudokus[i]))
-	max_index = global_densities.index(max(global_densities))
-	min_index = global_densities.index(min(global_densities))
-	print np.array(sudokus[min_index])
-	print max(global_densities)
-	print min(global_densities)
-	plt.hist(global_densities)
+	# global_densities = []
+	# for i in range(len(sudokus)):
+	# 	global_densities.append(globalDensity(sudokus[i]))
+	# max_index = global_densities.index(max(global_densities))
+	# min_index = global_densities.index(min(global_densities))
+	# print np.array(sudokus[min_index])
+	# print max(global_densities)
+	# print min(global_densities)
+	# plt.hist(global_densities)
 
-	# plt.show()
+	# calculates the symmetry of the sudokus
+	global_symmetries = []
+	for i in range(len(sudokus)):
+		global_symmetries.append(globalSymmetry(sudokus[i]))
+	max_index = global_symmetries.index(max(global_symmetries))
+	min_index = global_symmetries.index(min(global_symmetries))
+	print np.array(sudokus[max_index])
+	print max(global_symmetries)
+	print min(global_symmetries)
+	plt.hist(global_symmetries)
+
+	plt.show()

@@ -265,10 +265,9 @@ def dump_zchaff_stats():
     json.dump(n_decisions, open('zchaff_n_decisions.json', 'w'))
     json.dump(conflict_literals, open('zchaff_conflict_literals.json', 'w'))
 
-def plot_statistics(file):
-    n_sudokus = 500
+def plot_statistics():
 
-    global_densities = json.load(open('global_densities.json','r'))
+    # global_densities = json.load(open('global_densities.json','r'))
     # global_densities = np.array(global_densities)
     # indexes = global_densities.argsort()
 
@@ -276,7 +275,7 @@ def plot_statistics(file):
     # num_densities = np.array(num_densities)
     # indexes = num_densities.argsort()
 
-    # global_symmetries = json.load(open('global_symmetries.json','r'))
+    global_symmetries = json.load(open('global_symmetries.json','r'))
     # global_symmetries = np.array(global_symmetries)
     # indexes = global_symmetries.argsort()
 
@@ -285,7 +284,7 @@ def plot_statistics(file):
     conflict_literals = json.load(open('zchaff_conflict_literals.json','r'))
 
 
-    plt.plot(global_densities, conflict_literals, 'ro')
+    plt.plot(global_symmetries, conflict_literals, 'ro')
     plt.show()
 
 if __name__ == '__main__':
@@ -293,13 +292,14 @@ if __name__ == '__main__':
     # dump_global_densities()
     # dump_global_symmetries()
     # dump_num_densities()
-    dump_zchaff_stats()
+    # dump_zchaff_stats()
+    plot_statistics()
 	
 # BIN
     # max_decision_levels.append(int(stats[753])) 
     # n_decisions.append(int(stats[757]))
     # conflict_literals.append(int(stats[801]))  
-        
+
     # # Read a line and create a Sudoku object
     # file = open("raw_17_clue_sudokus.txt")
     # my_sud = Sudoku(file.readline()[:-1])

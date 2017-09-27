@@ -1,4 +1,7 @@
 import numpy as np
+import subprocess
+import json
+from sudoku import *
 from scipy import signal
 
 class Sudoku:
@@ -211,13 +214,102 @@ class Sudoku:
             self.block_uniqueness_enc() + 
             self.assigned_enc())
 
-if __name__ == '__main__':
-	# Read a line and create a Sudoku object
+def dump_global_densities():
+    sudokus = json.load(open('49k17.json','r'))
+    n_sudokus = len(sudokus)
+    global_densities = []
+    for i in range(n_sudokus):
+        global_densities.append(globalDensity(sudokus[i]))
+    json.dump(global_densities, open('global_densities.json', 'w'))
+
+def dump_num_densities():
+    sudokus = json.load(open('49k17.json','r'))
+    n_sudokus = len(sudokus)
+    num_densities = []
+    for i in range(n_sudokus):
+        num_densities.append(numDensity(sudokus[i]))
+    json.dump(num_densities, open('num_densities.json', 'w'))
+
+def dump_global_symmetries():
+    sudokus = json.load(open('49k17.json','r'))
+    n_sudokus = len(sudokus)
+    global_symmetries = []
+    for i in range(n_sudokus):
+        global_symmetries.append(globalSymmetry(sudokus[i]))
+    json.dump(global_symmetries, open('global_symmetries.json', 'w'))
+
+def find_sub_list(sl,l):
+    sll=len(sl)
+    for ind in (i for i,e in enumerate(l) if e==sl[0]):
+        if l[ind:ind+sll]==sl:
+            return ind+sll
+
+def dump_zchaff_stats():
     file = open("raw_17_clue_sudokus.txt")
-    my_sud = Sudoku(file.readline()[:-1])
+    lines = [line[:-1] for line in file]
     file.close()
+    max_decision_levels = []
+    n_decisions = []
+    conflict_literals = []
+    for line in lines:
+        my_sud = Sudoku(line)
+        output = open("encoding.cnf", "w")
+        output.write(my_sud.minimal_encoding())
+        output.close()
+        statistics = subprocess.check_output("zchaff encoding.cnf", shell=True, universal_newlines=True)
+        stats = statistics.split()
+        max_decision_levels.append(int(stats[find_sub_list(["Decision", "Level"], stats)])) 
+        n_decisions.append(int(stats[find_sub_list(["of", "Decisions"], stats)]))
+        conflict_literals.append(int(stats[find_sub_list(["Conflict", "Literals"], stats)]))  
+    json.dump(max_decision_levels, open('zchaff_max_decision_levels.json', 'w'))
+    json.dump(n_decisions, open('zchaff_n_decisions.json', 'w'))
+    json.dump(conflict_literals, open('zchaff_conflict_literals.json', 'w'))
+
+def plot_statistics(file):
+    n_sudokus = 500
+
+    global_densities = json.load(open('global_densities.json','r'))
+    # global_densities = np.array(global_densities)
+    # indexes = global_densities.argsort()
+
+    # num_densities = json.load(open('num_densities.json','r'))
+    # num_densities = np.array(num_densities)
+    # indexes = num_densities.argsort()
+
+    # global_symmetries = json.load(open('global_symmetries.json','r'))
+    # global_symmetries = np.array(global_symmetries)
+    # indexes = global_symmetries.argsort()
+
+    # max_decision_levels = json.load(open('zchaff_max_decision_levels.json','r'))
+    # n_decisions = json.load(open('zchaff_n_decisions.json','r'))
+    conflict_literals = json.load(open('zchaff_conflict_literals.json','r'))
+
+
+    plt.plot(global_densities, conflict_literals, 'ro')
+    plt.show()
+
+if __name__ == '__main__':
+
+    # dump_global_densities()
+    # dump_global_symmetries()
+    # dump_num_densities()
+    dump_zchaff_stats()
+	
+# BIN
+    # max_decision_levels.append(int(stats[753])) 
+    # n_decisions.append(int(stats[757]))
+    # conflict_literals.append(int(stats[801]))  
+        
+    # # Read a line and create a Sudoku object
+    # file = open("raw_17_clue_sudokus.txt")
+    # my_sud = Sudoku(file.readline()[:-1])
+    # file.close()
     
-    # Export the minimal encoding to be solved with zChaff
-    output = open("encoding.cnf", "w")
-    output.write(my_sud.minimal_encoding())
-    output.close()    
+    # # Export the minimal encoding to be solved with zChaff
+    # output = open("encoding.cnf", "w")
+    # output.write(my_sud.minimal_encoding())
+    # output.close()
+
+    # statistics = subprocess.check_output("zchaff encoding.cnf", shell=True, universal_newlines=True)
+
+    # print statistics.split()[753]

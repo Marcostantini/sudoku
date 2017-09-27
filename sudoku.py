@@ -172,14 +172,14 @@ if __name__ == "__main__":
 	# plt.hist(global_densities)
 
 	# calculates the symmetry of the sudokus
-	global_symmetries = []
-	for i in range(len(sudokus)):
-		global_symmetries.append(globalSymmetry(sudokus[i]))
-	max_index = global_symmetries.index(max(global_symmetries))
-	min_index = global_symmetries.index(min(global_symmetries))
-	print np.array(sudokus[max_index])
-	print max(global_symmetries)
-	print min(global_symmetries)
-	plt.hist(global_symmetries)
+	# global_symmetries = []
+	# for i in range(len(sudokus)):
+	# 	global_symmetries.append(globalSymmetry(sudokus[i]))
+	# max_index = global_symmetries.index(max(global_symmetries))
+	# min_index = global_symmetries.index(min(global_symmetries))
+	# print np.array(sudokus[max_index])
+	# print max(global_symmetries)
+	# print min(global_symmetries)
+	# plt.hist(global_symmetries)
 
-	plt.show()
+	# plt.show()

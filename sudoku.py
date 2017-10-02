@@ -67,6 +67,10 @@ def globalDensity(sudoku):
 	density = (rowDensity(sudoku) + colDensity(sudoku) + blockDensity(sudoku)) / float(3)
 	return density
 
+def rowBlockDensity(sudoku):
+	density = (rowDensity(sudoku) + blockDensity(sudoku)) / float(2)
+	return density
+
 def maxDensity(sudoku):
 	givens = getGivens(sudoku)
 	average = givens / float(SIZE)
